@@ -25,7 +25,7 @@ import scala.concurrent._
 import scala.util.Try
 
 //import play.api.http.{ContentTypeOf, Writeable}
-import com.ning.http.client.{AsyncHttpClient, AsyncHttpClientConfig, FluentCaseInsensitiveStringsMap, HttpResponseBodyPart, HttpResponseHeaders, HttpResponseStatus, PerRequestConfig, RequestBuilderBase, Response => AHCResponse}
+import com.ning.http.client.{AsyncHttpClient, AsyncHttpClientConfig, FluentCaseInsensitiveStringsMap, HttpResponseBodyPart, HttpResponseHeaders, HttpResponseStatus, RequestBuilderBase, Response => AHCResponse}
 
 import scala.collection.immutable.TreeMap
 //import play.core.utils.CaseInsensitiveOrdered
@@ -92,9 +92,9 @@ object WS extends WSTrait {
     //todo: use RDF graph to set the options
 
     val asyncHttpConfig = new AsyncHttpClientConfig.Builder()
-      .setConnectionTimeoutInMs(120000)
-      .setRequestTimeoutInMs(120000)
-      .setFollowRedirects(true)
+      .setConnectTimeout(120000)
+      .setRequestTimeout(120000)
+      .setFollowRedirect(true)
       .setUseProxyProperties(true)
       .setUserAgent("W3C LDP Scala UserAgent")
 
@@ -155,7 +155,8 @@ object WS extends WSTrait {
      * Return the current query string parameters
      */
     def queryString: Map[String, Seq[String]] = {
-      mapAsScalaMapConverter(request.asInstanceOf[com.ning.http.client.Request].getParams()).asScala.map(e => e._1 -> e._2.asScala.toSeq).toMap
+      val query_seq = request.asInstanceOf[com.ning.http.client.Request].getQueryParams.asScala map { p => (p.getName, p.getValue)}
+      query_seq.groupBy(_._1) mapValues {v => v map {_._2} }
     }
 
     /**
@@ -238,7 +239,7 @@ object WS extends WSTrait {
      */
     def setQueryString(queryString: Map[String, Seq[String]]) = {
       for ((key, values) <- queryString; value <- values) {
-        this.addQueryParameter(key, value)
+        this.addQueryParam(key, value)
       }
       this
     }
@@ -299,7 +300,7 @@ object WS extends WSTrait {
           } else {
             iteratee = null
             // Must close underlying connection, otherwise async http client will drain the stream
-            bodyPart.markUnderlyingConnectionAsClosed()
+            bodyPart.markUnderlyingConnectionAsToBeClosed()
             STATE.ABORT
           }
         }
@@ -487,9 +488,7 @@ trait  WSTrait {
         .setQueryString(queryString)
       followRedirects.map(request.setFollowRedirects(_))
       timeout.map { t: Int =>
-        val config = new PerRequestConfig()
-        config.setRequestTimeoutInMs(t)
-        request.setPerRequestConfig(config)
+        request.setRequestTimeout(t) 
       }
       virtualHost.map { v =>
         request.setVirtualHost(v)
@@ -507,10 +506,8 @@ trait  WSTrait {
         .setQueryString(queryString)
         .setBody(bodyGenerator)
       followRedirects.map(request.setFollowRedirects(_))
-      timeout.map { t: Int =>
-        val config = new PerRequestConfig()
-        config.setRequestTimeoutInMs(t)
-        request.setPerRequestConfig(config)
+      timeout.map { t: Int => 
+        request.setRequestTimeout(t)
       }
       virtualHost.map { v =>
         request.setVirtualHost(v)
@@ -526,9 +523,7 @@ trait  WSTrait {
         .setBody(wrt.asString(body,"").get) //todo: this only works for strings. Adapt Writer for binaries. Also deal better with Try
       followRedirects.map(request.setFollowRedirects(_))
       timeout.map { t: Int =>
-        val config = new PerRequestConfig()
-        config.setRequestTimeoutInMs(t)
-        request.setPerRequestConfig(config)
+        request.setRequestTimeout(t)
       }
       virtualHost.map { v =>
         request.setVirtualHost(v)
@@ -575,7 +570,8 @@ case class Response(ahcResponse: AHCResponse) {
     val contentType = Option(ahcResponse.getContentType).getOrElse("application/octet-stream")
     val charset = Option(AsyncHttpProviderUtils.parseCharset(contentType)).getOrElse {
       if (contentType.startsWith("text/"))
-        AsyncHttpProviderUtils.DEFAULT_CHARSET
+        // Used displayName to get a string, not certain this is correct (mo-seph, 08/12/2015)
+        AsyncHttpProviderUtils.DEFAULT_CHARSET.displayName()
       else
         "utf-8"
     }
