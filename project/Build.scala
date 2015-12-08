@@ -69,8 +69,9 @@ object ApplicationBuild extends Build {
     "org.bouncycastle" % "bcprov-jdk15on" % "1.51",
     "org.bouncycastle" % "bcpkix-jdk15on" % "1.51",
     "net.sf.uadetector" % "uadetector-resources" % "2014.01",
-	"com.typesafe.play" % "play-iteratees_2.11" % "2.4.4",
-	"com.typesafe.play" % "play-ws_2.11" % "2.4.4",
+    "com.typesafe.play" % "play-iteratees_2.11" % "2.4.4",
+    "com.typesafe.play" % "play-ws_2.11" % "2.4.4",
+    "com.ning" % "async-http-client" % "1.8.14",
     scalatest,
     // https://code.google.com/p/guava-libraries/
     "com.google.guava" % "guava" % "16.0.1",
