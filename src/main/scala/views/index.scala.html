@@ -1,0 +1,11 @@
+@()
+
+    @title = {
+        Stample
+    }
+
+@main(title, NavigationBar.Home) {
+    @helper.form(action = routes.Subdomains.createSubdomain) {
+        <button type="submit" onclick="this.form.submit();">Create your user space</button>
+    }
+}
