@@ -30,7 +30,8 @@ class WebIDTrustManager extends X509TrustManager {
 
   def checkServerTrusted(p1: Array[X509Certificate], p2: String) {}
 
-  def getAcceptedIssuers = Array(WebID.cert)
+  //def getAcceptedIssuers = Array(WebID.cert)
+  def getAcceptedIssuers = Array()
 }
 
 /**

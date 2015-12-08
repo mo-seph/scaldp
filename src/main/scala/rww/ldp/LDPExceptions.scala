@@ -5,7 +5,7 @@ import java.net.URI
 import org.w3.banana.{BananaException, PointedGraph, RDF}
 import rww.auth.SigInfo
 import rww.ldp.auth.Method
-import rww.play.AuthorizedModes
+//import rww.play.AuthorizedModes
 import rww.play.auth.Subject
 
 /**
