@@ -4,7 +4,7 @@ import java.io.StringReader
 import java.util.concurrent.atomic.AtomicReference
 
 import com.ning.http.client.FluentCaseInsensitiveStringsMap
-import com.ning.http.util.DateUtil
+import org.apache.http.client.utils.DateUtils
 import org.slf4j.LoggerFactory
 import org.w3.banana._
 import org.w3.banana.io._
@@ -97,7 +97,7 @@ class WSClient[Rdf <: RDF](readerSelector: ReaderSelector[Rdf, Try], rdfWriter: 
               val headers: FluentCaseInsensitiveStringsMap = response.ahcResponse.getHeaders
               val meta = parseHeaders(URI(url.toString), headers)
               val updated = Try {
-                DateUtil.parseDate(headers.getFirstValue("Last-Modified"))
+                DateUtils.parseDate(headers.getFirstValue("Last-Modified"))
               }
               Future.successful(RemoteLDPR(URI(url.toString), graph, meta, updated))
             }
