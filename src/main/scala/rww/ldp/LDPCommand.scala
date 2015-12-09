@@ -121,9 +121,11 @@ object LDPCommand {
 
   def `return`[Rdf <: RDF, A](a: => A): Script[Rdf, A] =
     Return[({ type l[+x] = LDPCommand[Rdf, x] })#l, A](a)
+    //Will have to change to Free.point in the future (Scalaz >= 7.1) 
 
-  def suspend[Rdf <: RDF, A](a: LDPCommand[Rdf, Script[Rdf, A]]): Script[Rdf, A] =
+  def suspend[Rdf <: RDF, A](a: LDPCommand[Rdf, Script[Rdf, A]]): Script[Rdf, A] = 
     Suspend[({ type l[+x] = LDPCommand[Rdf, x] })#l, A](a)
+    //Will have to change to Free.suspend and supply functor in the future (Scalaz >= 7.1) 
 
   private def nop[Rdf <: RDF]: Script[Rdf, Unit] = `return`(())
 
