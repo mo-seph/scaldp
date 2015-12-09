@@ -37,7 +37,7 @@ abstract class WebIDVerifierTest[Rdf<:RDF](
   val ops: RDFOps[Rdf],
   val recordBinder: binder.RecordBinder[Rdf],
   sparqlOps: SparqlOps[Rdf],
-  sparqlGraph: SparqlEngine[Rdf, Try, Rdf#Graph] with SparqlUpdate[Rdf, Try, Rdf#Graph],
+  sparqlGraph: SparqlEngine[Rdf, Try, Rdf#Graph], //with SparqlUpdate[Rdf, Try, Rdf#Graph],
   turtleWriter: RDFWriter[Rdf, Try, Turtle],
   reader: RDFReader[Rdf, Try, Turtle]
 ) extends WordSpec with Matchers with BeforeAndAfterAll with TestHelper with TestGraphs[Rdf] {

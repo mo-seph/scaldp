@@ -30,7 +30,7 @@ class LDPCActor[Rdf<:RDF](ldpcUri: Rdf#URI, root: Path)
                          (implicit
                           ops: RDFOps[Rdf],
                           sparqlOps: SparqlOps[Rdf],
-                          sparqlGraph: SparqlEngine[Rdf, Try, Rdf#Graph]  with SparqlUpdate[Rdf, Try, Rdf#Graph],
+                          sparqlGraph: SparqlEngine[Rdf, Try, Rdf#Graph],//  with SparqlUpdate[Rdf, Try, Rdf#Graph],
                           reader: RDFReader[Rdf, Try, Turtle],
                           writer: RDFWriter[Rdf, Try, Turtle]
 //                                  adviceSelector: AdviceSelector[Rdf] = new EmptyAdviceSelector

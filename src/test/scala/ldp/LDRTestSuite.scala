@@ -35,7 +35,7 @@ class LDRTestSuite[Rdf<:RDF](
   val ops: RDFOps[Rdf],
   val recordBinder: RecordBinder[Rdf],
   sparqlOps: SparqlOps[Rdf],
-  sparqlGraph: SparqlEngine[Rdf, Try, Rdf#Graph] with SparqlUpdate[Rdf, Try, Rdf#Graph],
+  sparqlGraph: SparqlEngine[Rdf, Try, Rdf#Graph], // with SparqlUpdate[Rdf, Try, Rdf#Graph],
   turtleWriter: RDFWriter[Rdf,Try, Turtle],
   reader: RDFReader[Rdf, Try, Turtle]
 ) extends WordSpec with Matchers with BeforeAndAfterAll with TestHelper with TestGraphs[Rdf] {
@@ -64,6 +64,8 @@ class LDRTestSuite[Rdf<:RDF](
         aclGraph <- getLDPR(cardMeta.acl.get)
         containerAclGraph <- getLDPR(ldpcMeta.acl.get)
       } yield {
+        println("LDPC: " + ldpc)
+        println("Bertails: " + bertailsContainer)
         ldpc should be(bertailsContainer)
         cardMeta.acl.get should be(bertailsCardAcl)
         assert(rGraph isIsomorphicWith (bertailsCardGraph union containsRel).resolveAgainst(bertailsCard))

@@ -28,7 +28,7 @@ import scalaz.{-\/, \/-}
 class LDPRActor[Rdf<:RDF](val baseUri: Rdf#URI,path: Path)
                        (implicit ops: RDFOps[Rdf],
                          sparqlOps: SparqlOps[Rdf],
-                         sparqlGraph: SparqlEngine[Rdf, Try, Rdf#Graph] with SparqlUpdate[Rdf, Try, Rdf#Graph],
+                         sparqlGraph: SparqlEngine[Rdf, Try, Rdf#Graph], //with SparqlUpdate[Rdf, Try, Rdf#Graph],
                          reader: RDFReader[Rdf, Try, Turtle],
                          writer: RDFWriter[Rdf, Try, Turtle]
 //                        adviceSelector: AdviceSelector[Rdf]= new EmptyAdviceSelector
@@ -252,13 +252,18 @@ class LDPRActor[Rdf<:RDF](val baseUri: Rdf#URI,path: Path)
         val nme = localName(uri)
         getResource(nme) match {
           case Success(ldpr: LocalLDPR[Rdf]) => {
+            //TODO: Fix (dmr)
+            throw new RuntimeException("Can't use SparqlUpdate at the moment :(")
+            /*
             sparqlGraph.executeUpdate(ldpr.graph, update, bindings) match {
               case Success(gr) => {
-                setResource(nme, gr)
+                //setResource(nme, gr)
                 rwwRouterActor.tell(ScriptMessage(k(true)), context.sender)
               }
               case Failure(e) => throw e
             }
+            * 
+            */
           }
           case Success(_) => context.sender ! RequestNotAcceptable(s"$uri does not contain a GRAPH - PATCH is not possible")
           case Failure(fail) => context.sender ! akka.actor.Status.Failure(fail)
