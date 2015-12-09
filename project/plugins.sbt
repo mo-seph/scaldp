@@ -19,3 +19,4 @@ resolvers += Resolver.url("bblfish ivy repository",url("http://bblfish.net/work/
 //resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
 
 
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.0")
