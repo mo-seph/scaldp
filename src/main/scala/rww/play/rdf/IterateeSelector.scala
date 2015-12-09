@@ -38,7 +38,8 @@ object IterateeSelector {
   def apply[Result, T](implicit syntax: Syntax[T], reader: RDFIteratee[Result,T]): IterateeSelector[Result] =
     new IterateeSelector[Result] {
       def apply(mime: MimeType): Option[RDFIteratee[Result,Any]] =
-        if (syntax.mimeTypes.list contains mime)
+        //contains doesn't seem to be in scalaz.IList
+        if ((syntax.mimeTypes.list find {_ == mime}).isDefined)
           Some(reader)
         else
           None
